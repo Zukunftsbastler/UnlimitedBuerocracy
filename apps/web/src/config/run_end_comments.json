@@ -1,0 +1,77 @@
+{
+  "id": "run_end_comments_de_v1",
+  "sprache": "de",
+  "version": "1.2",
+  "kommentare": {
+    "energie_erschöpft": [
+      "Der Körper hat gekündigt, bevor der Verstand es tat. Antrag auf Ruhezeit genehmigt.",
+      "Sie haben das Maximum an Kaffeetoleranz erreicht. Bitte wenden Sie sich an die Personalstelle.",
+      "Energielevel unter Verwaltungsnorm. Dienstvorschrift 17 greift: Zwangspause.",
+      "Der Stempelarm hat ein offizielles Ruhestandsgesuch eingereicht.",
+      "Letzter Stempel gesetzt. Danach: Stille. Bürokratische Stille.",
+      "Der Bildschirm meldet: »Sie arbeiten zu effizient, um weiterzumachen.«",
+      "Sie sind nun offiziell zu müde, um ineffizient zu sein. Glückwunsch?",
+      "Energieverbrauch über dem Haushaltsplan. Abteilung schließt bis auf Weiteres.",
+      "Der Körper sagt Nein, das Formular sagt Vielleicht. Ergebnis: Run-Ende.",
+      "Sie sind eingeschlafen, aber Ihr Formular arbeitet weiter. Das System bleibt in Betrieb."
+    ],
+    "konzentration_versagt": [
+      "Die Gedanken sind in Aktenform über den Schreibtisch geflossen.",
+      "Ihre Konzentration wurde archiviert. Zugriff nur mit Sondergenehmigung.",
+      "Das Gehirn hat eine Rundmail an alle Abteilungen geschickt – Betreff: 'Bitte übernehmen Sie.'",
+      "Fehlstempelquote zu hoch. Ihr Stempel wurde entmündigt.",
+      "Sie haben vergessen, warum Sie klicken. Das System aber nicht.",
+      "Verwaltungstechnisch gilt Ihre Aufmerksamkeit nun als Verschlusssache.",
+      "Klarheit: 0. Gedankengang: ungeklärt. Ursache: Aktenzeichen fehlt.",
+      "Ein unbeschrifteter Ordner hat Ihre Konzentration absorbiert.",
+      "Sie blicken ins Formular und das Formular blickt zurück.",
+      "Ihre Gedanken sind jetzt Teil des Aktenverzeichnisses. Glückwunsch zum dauerhaften Eintrag."
+    ],
+    "ueberlastung_kollaps": [
+      "Systemischer Zusammenbruch dokumentiert. Protokoll wurde erfolgreich zerstört.",
+      "Das System hat sich selbst überprüft – und für untragbar befunden.",
+      "Alle Akten wurden gleichzeitig geöffnet. Niemand weiß mehr, warum.",
+      "Ein Kollege hat 'neustarten' vorgeschlagen. Niemand hat widersprochen.",
+      "Audit-Bericht: 'Zu viel Ordnung auf zu wenig Fläche.'",
+      "Sie wurden von der Bürokratie absorbiert. Ihre Stempelkarte bleibt ungestempelt.",
+      "Die Struktur hat sich gegen ihren Urheber gewandt. Vollzug gemeldet.",
+      "Überlastung festgestellt. Der Server hat sich freiwillig verbeamtet.",
+      "Sie haben das Ende der Effizienz erreicht. Der Rest ist Protokoll.",
+      "Das System bedankt sich für Ihre Mitarbeit und schließt sich selbst."
+    ],
+    "manuell_beendet": [
+      "Sie haben selbst entschieden, den Antrag zu schließen. Ein beispielloser Akt der Selbstbestimmung.",
+      "Selbstbeendigung registriert. Ein seltenes Zeichen bürokratischer Eigeninitiative.",
+      "Sie haben aufgehört, bevor das System Sie aufhören ließ. Das wird nicht vergessen.",
+      "Man hat Sie nicht entlassen – Sie haben sich abgemeldet. Das irritiert die Statistik.",
+      "Ein Formular weniger. Eine Entscheidung mehr. Die Abteilung ist verwirrt.",
+      "Sie haben die Arbeit beendet, bevor sie Sie beendet hat. Mutig, aber verdächtig.",
+      "Ihr Abgang wurde protokolliert, aber nicht genehmigt.",
+      "Sie haben freiwillig aufgehört. Das System hält das für einen Bug.",
+      "Dienst nach Vorschrift endet selten auf eigenen Wunsch. Sie sind nun ein Ausnahmefall.",
+      "Sie haben das Programm beendet. Das Programm bedankt sich für Ihre Gehorsamsverweigerung."
+    ],
+    "allgemein": [
+      "Ihre Effizienz wurde notiert, kategorisiert und anschließend missverstanden.",
+      "Ein weiterer erfolgreicher Tag im Dienste der Unauffälligkeit.",
+      "Das Formular dankt Ihnen für Ihr Mitwirken – es fühlt sich jetzt vollständiger.",
+      "Sie haben das Ziel erreicht, ohne zu wissen, welches es war. Bürokratie pur.",
+      "Ihre Akte wurde an die Abteilung für Sinnfragen weitergeleitet. Kein Rücklauf erwartet.",
+      "Ein Beobachter im Hintergrund nickt zustimmend, obwohl er nichts versteht.",
+      "Das System hat beschlossen, Ihre Existenz als ausreichend konform zu bewerten.",
+      "Sie haben nichts verändert – und genau das war die Aufgabe.",
+      "Ihre Klicks wurden als Ausdruck tiefer Hingabe gewertet. Oder Ermüdung.",
+      "Ein Algorithmus hat beschlossen, dass Sie eine Pause verdienen. Nicht der Mensch.",
+      "Sie haben erfolgreich gezeigt, dass Zeit eine variable Verwaltungseinheit ist.",
+      "Die Statistikabteilung meldet: Ihre Ergebnisse sind unauffällig hervorragend.",
+      "Ein Komitee hat Ihre Leistung geprüft und beschlossen, nichts zu beschließen.",
+      "Ihre Arbeitsweise wurde archiviert, anonymisiert und lobend missverstanden.",
+      "Das Formular F-12 wurde Ihnen posthum zugewiesen. Glückwunsch zum Fortschritt.",
+      "Das System hat sich über Ihre Existenz gefreut. Für genau 3,7 Sekunden.",
+      "Sie haben erfolgreich gezeigt, dass Bürokratie keine Grenzen kennt – nur Zuständigkeiten.",
+      "Eine neue Kennziffer wurde nach Ihnen benannt. Sie hat keine Funktion.",
+      "Ihre Unterschrift hat Spuren im System hinterlassen. Niemand weiß, wo.",
+      "Ihre Sitzung wurde automatisch verlängert. Nur der Sinn blieb zurück."
+    ]
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "kosten": {
+    "automatisierung": {
+      "basis": 10,
+      "wachstum": 1.5
+    },
+    "kurse": {
+      "basis": 8,
+      "wachstum": 1.35
+    },
+    "befoerderung": {
+      "basis": 100,
+      "wachstum": 1.8
+    },
+    "powerups": {
+      "basis": 5,
+      "wachstum": 1.25
+    }
+  },
+  "vpErtrag": {
+    "minProRun": 1,
+    "zeitFaktor": 0.15,
+    "klarheitBonus": 0.3,
+    "softCapSek": 120
+  },
+  "aufwand": {
+    "chaosFaktor": 1.5,
+    "dämpfung": 0.15
+  },
+  "zustand": {
+    "energieVerbrauchProKlick": 0.015,
+    "energieVerbrauchProSek": 0.008,
+    "energieRegenProSek": 0.002,
+    "konzentrationsDriftProSek": 0.01,
+    "konzentrationsBoostNeuigkeit": 0.06,
+    "motivationGainErfolg": 0.015,
+    "motivationLossFehler": 0.08,
+    "verwirrungProAufwand": 0.8,
+    "verwirrungDecayProSek": 0.003,
+    "ueberlastungSchwelle": 0.75,
+    "gewichte": {
+      "w1": 0.4,
+      "w2": 0.35,
+      "w3": 0.25
+    }
+  }
+}

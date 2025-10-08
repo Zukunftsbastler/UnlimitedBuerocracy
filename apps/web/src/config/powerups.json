@@ -1,0 +1,78 @@
+{
+  "powerups": [
+    {
+      "id": "kaffee",
+      "name": "Kaffeepause",
+      "icon": "☕",
+      "beschreibung": "Eine Tasse Kaffee belebt Körper und Geist",
+      "dauerSek": 30,
+      "cooldownSek": 90,
+      "effekte": [
+        { "ziel": "energie", "delta": 0.25, "typ": "sofort" },
+        { "ziel": "konzentration", "delta": 0.15, "typ": "sofort" }
+      ]
+    },
+    {
+      "id": "mittagspause",
+      "name": "Mittagspause",
+      "icon": "🍽️",
+      "beschreibung": "Eine richtige Pause macht den Kopf wieder frei",
+      "dauerSek": 60,
+      "cooldownSek": 180,
+      "effekte": [
+        { "ziel": "energie", "delta": 0.5, "typ": "sofort" },
+        { "ziel": "motivation", "delta": 0.3, "typ": "sofort" },
+        { "ziel": "verwirrung", "delta": -0.2, "typ": "sofort" }
+      ]
+    },
+    {
+      "id": "ordnungsritual",
+      "name": "Ordnungsritual",
+      "icon": "📋",
+      "beschreibung": "Systematisches Sortieren schafft Klarheit",
+      "dauerSek": 45,
+      "cooldownSek": 120,
+      "effekte": [
+        { "ziel": "aufwand", "delta": -0.3, "typ": "sofort" },
+        { "ziel": "konzentration", "delta": 0.2, "typ": "sofort" }
+      ]
+    },
+    {
+      "id": "prozessoptimierung",
+      "name": "Prozessoptimierung",
+      "icon": "⚙️",
+      "beschreibung": "Effizienzsteigerung für begrenzte Zeit",
+      "dauerSek": 30,
+      "cooldownSek": 150,
+      "effekte": [
+        { "ziel": "klickErtrag", "multiplikator": 1.5, "typ": "buff" },
+        { "ziel": "dps", "multiplikator": 1.3, "typ": "buff" }
+      ]
+    },
+    {
+      "id": "meditation",
+      "name": "Achtsamkeitsübung",
+      "icon": "🧘",
+      "beschreibung": "Innere Ruhe trotz bürokratischem Chaos",
+      "dauerSek": 45,
+      "cooldownSek": 200,
+      "effekte": [
+        { "ziel": "ueberlastung", "delta": -0.4, "typ": "sofort" },
+        { "ziel": "verwirrung", "delta": -0.3, "typ": "sofort" },
+        { "ziel": "motivation", "delta": 0.2, "typ": "sofort" }
+      ]
+    },
+    {
+      "id": "motivationsrede",
+      "name": "Motivationsrede",
+      "icon": "📢",
+      "beschreibung": "Selbstgespräch über den Sinn der Verwaltung",
+      "dauerSek": 20,
+      "cooldownSek": 120,
+      "effekte": [
+        { "ziel": "motivation", "delta": 0.4, "typ": "sofort" },
+        { "ziel": "energie", "delta": 0.1, "typ": "sofort" }
+      ]
+    }
+  ]
+}

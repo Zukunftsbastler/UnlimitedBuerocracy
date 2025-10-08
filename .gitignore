@@ -1,0 +1,96 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+*.tsbuildinfo
+
+# Development
+.DS_Store
+*.local
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+.classpath
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Cache
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Game data - lokale Spielstände und Datenbanken
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# IndexedDB files (Browser-Spielstände)
+**/indexedDB/
+**/.indexeddb/
+
+# Lokale Spieler-Daten
+saves/
+savegames/
+player-data/
+user-data/
+
+# Audio assets (falls große Dateien)
+# Auskommentiert, falls doch benötigt
+# *.mp3
+# *.wav
+# *.ogg
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Package manager locks (optional - je nach Präferenz)
+# pnpm-lock.yaml kann behalten werden für reproducible builds

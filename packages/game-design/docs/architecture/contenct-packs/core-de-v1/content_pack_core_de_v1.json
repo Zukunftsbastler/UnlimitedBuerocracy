@@ -1,0 +1,188 @@
+import { z } from 'zod';
+
+export const TriggerSchema = z.object({
+  rangMin: z.number().optional(),
+  klarheitMin: z.number().optional(),
+  aufwandMax: z.number().optional(),
+  laufzeitSekMin: z.number().optional(),
+  praedikat: z.string().optional()
+});
+
+export const ContentDocSchema = z.object({
+  id: z.string(),
+  packId: z.string(),                 
+  sprache: z.string(),
+  schluessel: z.string(),
+  text: z.string().min(5),
+
+  typ: z.enum(['text', 'tooltip', 'dialog', 'system']).default('text'),
+  keyPattern: z.string().optional(), 
+
+  tags: z.array(z.string()).default([]),
+  seltenheit: z.enum(['haeufig', 'ungewoehnlich', 'rar']).default('haeufig'),
+  gewicht: z.number().min(1).default(1),
+  cooldownSek: z.number().min(0).default(0),
+  trigger: TriggerSchema.optional()
+});
+
+export const ContentPackSchema = z.object({
+  id: z.string(),
+  version: z.string(),
+  sprache: z.string(),
+  inhalt: z.array(ContentDocSchema)
+});
+
+{
+  "id": "core-de-v1",
+  "version": "1.0",
+  "sprache": "de",
+  "inhalt": [
+    {
+      "id": "az-001",
+      "schluessel": "dienstweg.klein",
+      "text": "Bitte nutzen Sie für den kleinen Dienstweg das große Formular 84b.",
+      "tags": ["dienstweg","satire"],
+      "seltenheit": "haeufig",
+      "gewicht": 3,
+      "cooldownSek": 120
+    },
+    {
+      "id": "az-002",
+      "schluessel": "kaffee.leer",
+      "text": "Die Kaffeemaschine streikt aus Solidarität mit der Belegschaft.",
+      "tags": ["kaffee","pause"],
+      "seltenheit": "haeufig",
+      "gewicht": 4,
+      "cooldownSek": 180,
+      "trigger": { "klarheitMin": 0.2 }
+    },
+    {
+      "id": "az-003",
+      "schluessel": "akten.verloren",
+      "text": "Akte 17-B ist unauffindbar. Wir haben eine neue angelegt.",
+      "tags": ["akten","verlust"],
+      "seltenheit": "ungewoehnlich",
+      "gewicht": 2,
+      "cooldownSek": 300,
+      "trigger": { "rangMin": 4 }
+    },
+    {
+      "id": "az-004",
+      "schluessel": "leitung.meldung",
+      "text": "Die Leitung hat sich gemeldet: Bitte nichts ändern, bis alles entschieden ist.",
+      "tags": ["leitung","satire"],
+      "seltenheit": "haeufig",
+      "gewicht": 5,
+      "cooldownSek": 90
+    },
+    {
+      "id": "az-005",
+      "schluessel": "system.neustart",
+      "text": "Systemneustart erforderlich. Bitte speichern Sie Ihre Geduld.",
+      "tags": ["it","system"],
+      "seltenheit": "haeufig",
+      "gewicht": 3,
+      "cooldownSek": 240
+    },
+    {
+      "id": "az-006",
+      "schluessel": "urlaub.abgelehnt",
+      "text": "Ihr Urlaubsantrag wurde abgelehnt, weil er eingereicht wurde.",
+      "tags": ["urlaub","absurd"],
+      "seltenheit": "ungewoehnlich",
+      "gewicht": 2,
+      "cooldownSek": 300
+    },
+    {
+      "id": "az-007",
+      "schluessel": "bericht.fertig",
+      "text": "Der Bericht ist fertig, sobald die Einleitung genehmigt wurde.",
+      "tags": ["bericht","prozess"],
+      "seltenheit": "haeufig",
+      "gewicht": 4,
+      "cooldownSek": 180,
+      "trigger": { "laufzeitSekMin": 120 }
+    },
+    {
+      "id": "az-008",
+      "schluessel": "neuer.vordruck",
+      "text": "Bitte verwenden Sie ab sofort das Formular, das es noch nicht gibt.",
+      "tags": ["formular","absurd"],
+      "seltenheit": "haeufig",
+      "gewicht": 3,
+      "cooldownSek": 150
+    },
+    {
+      "id": "az-009",
+      "schluessel": "sitzung.vertagt",
+      "text": "Die Sitzung wurde vertagt, um die Vertagung zu besprechen.",
+      "tags": ["meeting","zeit"],
+      "seltenheit": "haeufig",
+      "gewicht": 4,
+      "cooldownSek": 120
+    },
+    {
+      "id": "az-010",
+      "schluessel": "ordnung.ueberbewertet",
+      "text": "Ordnung ist das halbe Leben, die andere Hälfte sind Formulare.",
+      "tags": ["ordnung","spruch"],
+      "seltenheit": "haeufig",
+      "gewicht": 3,
+      "cooldownSek": 200
+    },
+    {
+      "id": "az-011",
+      "schluessel": "posteingang.voll",
+      "text": "Ihr Posteingang hat sich selbst archiviert.",
+      "tags": ["post","it"],
+      "seltenheit": "ungewoehnlich",
+      "gewicht": 2,
+      "cooldownSek": 300
+    },
+    {
+      "id": "az-012",
+      "schluessel": "dienstweg.wartung",
+      "text": "Der kleine Dienstweg wird derzeit gewartet.",
+      "tags": ["dienstweg"],
+      "seltenheit": "haeufig",
+      "gewicht": 3,
+      "cooldownSek": 180
+    },
+    {
+      "id": "az-013",
+      "schluessel": "arbeitszeit.rest",
+      "text": "Nur noch sieben Stunden bis Feierabend.",
+      "tags": ["zeit","arbeitstag"],
+      "seltenheit": "haeufig",
+      "gewicht": 4,
+      "cooldownSek": 60
+    },
+    {
+      "id": "az-014",
+      "schluessel": "mail.antwort",
+      "text": "Ihre Anfrage wurde zur Beantwortung weitergeleitet – an Sie.",
+      "tags": ["kommunikation"],
+      "seltenheit": "haeufig",
+      "gewicht": 3,
+      "cooldownSek": 120
+    },
+    {
+      "id": "az-015",
+      "schluessel": "pause.verpasst",
+      "text": "Ihre Pause wurde aus Zeitgründen in die nächste Woche verschoben.",
+      "tags": ["pause"],
+      "seltenheit": "haeufig",
+      "gewicht": 3,
+      "cooldownSek": 180
+    },
+    {
+      "id": "az-016",
+      "schluessel": "aktenzeichen.vergeben",
+      "text": "Ihr neues Aktenzeichen lautet AZ-∞-404. Es wird nie gefunden werden.",
+      "tags": ["akten"],
+      "seltenheit": "ungewoehnlich",
+      "gewicht": 2,
+      "cooldownSek": 300
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "automations": [
+    {
+      "id": "auto_basic",
+      "name": "Basis-Workflow",
+      "beschreibung": "Einfache Routineaufgaben werden automatisch erledigt",
+      "kosten": 10,
+      "ertrag": 1.0,
+      "chaos": 0.05,
+      "freischaltung": 0
+    },
+    {
+      "id": "auto_formular",
+      "name": "Formular-Maschine",
+      "beschreibung": "Standardformulare werden maschinell ausgefüllt",
+      "kosten": 50,
+      "ertrag": 3.0,
+      "chaos": 0.08,
+      "freischaltung": 1
+    },
+    {
+      "id": "auto_stempel",
+      "name": "Automatischer Stempel",
+      "beschreibung": "Dokumente werden ohne manuelle Prüfung abgestempelt",
+      "kosten": 150,
+      "ertrag": 8.0,
+      "chaos": 0.12,
+      "freischaltung": 3
+    },
+    {
+      "id": "auto_ablage",
+      "name": "Digitale Ablage",
+      "beschreibung": "Akten sortieren sich von selbst (meistens)",
+      "kosten": 400,
+      "ertrag": 20.0,
+      "chaos": 0.15,
+      "freischaltung": 5
+    },
+    {
+      "id": "auto_zentrale",
+      "name": "Prozess-Zentrale",
+      "beschreibung": "Vollautomatische Bearbeitung aller Standardfälle",
+      "kosten": 1000,
+      "ertrag": 50.0,
+      "chaos": 0.20,
+      "freischaltung": 8
+    },
+    {
+      "id": "auto_ki",
+      "name": "KI-Sachbearbeiter",
+      "beschreibung": "Künstliche Intelligenz übernimmt die Verwaltung",
+      "kosten": 2500,
+      "ertrag": 120.0,
+      "chaos": 0.25,
+      "freischaltung": 12
+    }
+  ]
+}

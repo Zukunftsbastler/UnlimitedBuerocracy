@@ -1,0 +1,81 @@
+{
+  "measures": [
+    {
+      "id": "stabilisierung",
+      "name": "Prozessstabilisierung",
+      "beschreibung": "Verringert vorübergehend die Zunahme des Aufwands",
+      "icon": "🔷",
+      "kosten": 20,
+      "dauer": 30,
+      "cooldown": 30,
+      "effekt": {
+        "typ": "multiplikator",
+        "ziel": "aufwandZuwachs",
+        "wert": 0.8
+      }
+    },
+    {
+      "id": "umlageverfahren",
+      "name": "Umlageverfahren",
+      "beschreibung": "Erhöht die Automationsleistung um 25%",
+      "icon": "📊",
+      "kosten": 15,
+      "dauer": 20,
+      "cooldown": 20,
+      "effekt": {
+        "typ": "multiplikator",
+        "ziel": "automation",
+        "wert": 1.25
+      }
+    },
+    {
+      "id": "schadensbegrenzung",
+      "name": "Schadensbegrenzung",
+      "beschreibung": "Reduziert Verwirrung sofort",
+      "icon": "🛡️",
+      "kosten": 25,
+      "dauer": 0,
+      "cooldown": 25,
+      "effekt": {
+        "typ": "sofort",
+        "ziel": "verwirrung",
+        "wert": -0.2
+      }
+    },
+    {
+      "id": "neuordnung",
+      "name": "Formale Neuordnung",
+      "beschreibung": "Stellt Klarheit kurzfristig auf mindestens 0.9",
+      "icon": "✨",
+      "kosten": 30,
+      "dauer": 10,
+      "cooldown": 40,
+      "effekt": {
+        "typ": "clamp",
+        "ziel": "klarheit",
+        "wert": 0.9
+      }
+    },
+    {
+      "id": "anreizprogramm",
+      "name": "Anreizprogramm",
+      "beschreibung": "Erhöht Motivation, steigert aber auch Aufwand",
+      "icon": "🎯",
+      "kosten": 12,
+      "dauer": 20,
+      "cooldown": 20,
+      "effekte": [
+        {
+          "typ": "addition",
+          "ziel": "motivation",
+          "wert": 0.2
+        },
+        {
+          "typ": "addition",
+          "ziel": "aufwand",
+          "wert": 0.05
+        }
+      ]
+    }
+  ]
+}

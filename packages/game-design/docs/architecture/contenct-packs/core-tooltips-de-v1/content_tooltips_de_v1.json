@@ -1,0 +1,167 @@
+{
+  "id": "core-tooltips-de-v1",
+  "version": "1.0",
+  "sprache": "de",
+  "inhalt": [
+    {
+      "id": "tt-001",
+      "typ": "tooltip",
+      "schluessel": "tooltip.skilltree.kurskosten",
+      "text": "Kostenvermerk: Bitte rechnen Sie mit wachsender Unzuständigkeit pro Stufe.",
+      "tags": ["tooltip", "skilltree", "kosten"],
+      "gewicht": 1
+    },
+    {
+      "id": "tt-002",
+      "typ": "tooltip",
+      "schluessel": "tooltip.skilltree.voraussetzungen",
+      "text": "Zugang nur mit ordnungsgemäß abgelegter Vorbildung. Fehlende Nachweise werden formgerecht ignoriert.",
+      "tags": ["tooltip", "skilltree"],
+      "gewicht": 1
+    },
+    {
+      "id": "tt-003",
+      "typ": "tooltip",
+      "schluessel": "tooltip.skilltree.fortbildung",
+      "text": "Fortbildung: Erhöht die Kompetenz, verringert die Freizeit.",
+      "tags": ["tooltip", "skilltree"],
+      "gewicht": 1
+    },
+    {
+      "id": "tt-004",
+      "typ": "tooltip",
+      "schluessel": "tooltip.prestige.rang",
+      "text": "Dieser Dienstrang verleiht Rechte. Pflichten entstehen automatisch.",
+      "tags": ["tooltip", "prestige"],
+      "gewicht": 1
+    },
+    {
+      "id": "tt-005",
+      "typ": "tooltip",
+      "schluessel": "tooltip.prestige.kleiner_dienstweg",
+      "text": "Der kleine Dienstweg: Offiziell nicht existent, inoffiziell vorgeschrieben.",
+      "tags": ["tooltip", "prestige"],
+      "gewicht": 1
+    },
+    {
+      "id": "tt-006",
+      "typ": "tooltip",
+      "schluessel": "tooltip.akten.aktenzeichen",
+      "text": "Das Aktenzeichen dient der eindeutigen Identifikation von Verwirrung.",
+      "tags": ["tooltip", "akten"],
+      "gewicht": 1
+    },
+    {
+      "id": "tt-007",
+      "typ": "tooltip",
+      "schluessel": "tooltip.akten.status",
+      "text": "Statusangaben sind verbindlich, bis sie rückwirkend angepasst werden.",
+      "tags": ["tooltip", "akten"],
+      "gewicht": 1
+    },
+    {
+      "id": "tt-008",
+      "typ": "tooltip",
+      "schluessel": "tooltip.akten.prioritaet",
+      "text": "Priorität I: dringend. Priorität II: dringlicher. Alle übrigen: demnächst.",
+      "tags": ["tooltip", "akten"],
+      "gewicht": 1
+    },
+    {
+      "id": "tt-009",
+      "typ": "tooltip",
+      "schluessel": "tooltip.run.timer",
+      "text": "Restarbeitszeit: läuft streng nach Gefühl.",
+      "tags": ["tooltip", "run"],
+      "gewicht": 1
+    },
+    {
+      "id": "tt-010",
+      "typ": "tooltip",
+      "schluessel": "tooltip.run.aufwand",
+      "text": "Verwaltungsaufwand – wächst proportional zur Erleichterung.",
+      "tags": ["tooltip", "run"],
+      "gewicht": 1
+    },
+    {
+      "id": "tt-011",
+      "typ": "tooltip",
+      "schluessel": "tooltip.run.klarheit",
+      "text": "Klarheit: schwer messbar, leicht zu verlieren.",
+      "tags": ["tooltip", "run"],
+      "gewicht": 1
+    },
+    {
+      "id": "tt-012",
+      "typ": "tooltip",
+      "schluessel": "tooltip.auto.praktikant",
+      "text": "Praktikant: halb so schnell wie ein Klick, doppelt so motiviert.",
+      "tags": ["tooltip", "automation"],
+      "gewicht": 1
+    },
+    {
+      "id": "tt-013",
+      "typ": "tooltip",
+      "schluessel": "tooltip.auto.abteilungsleitung",
+      "text": "Abteilungsleitung: multipliziert Effizienz und Verantwortung gleichermaßen.",
+      "tags": ["tooltip", "automation"],
+      "gewicht": 1
+    },
+    {
+      "id": "tt-014",
+      "typ": "tooltip",
+      "schluessel": "tooltip.state.energie",
+      "text": "Energie: sinkt planmäßig. Regeneration auf Antrag.",
+      "tags": ["tooltip", "state"],
+      "gewicht": 1
+    },
+    {
+      "id": "tt-015",
+      "typ": "tooltip",
+      "schluessel": "tooltip.state.konzentration",
+      "text": "Konzentration: nimmt ab mit jeder Ablenkung, besonders mit der Arbeit selbst.",
+      "tags": ["tooltip", "state"],
+      "gewicht": 1
+    },
+    {
+      "id": "tt-016",
+      "typ": "tooltip",
+      "schluessel": "tooltip.state.motivation",
+      "text": "Motivation: schwankt zwischen Begeisterung und Stillstand.",
+      "tags": ["tooltip", "state"],
+      "gewicht": 1
+    },
+    {
+      "id": "tt-017",
+      "typ": "tooltip",
+      "schluessel": "tooltip.state.verwirrung",
+      "text": "Verwirrung: entsteht bei zu viel Klarheit.",
+      "tags": ["tooltip", "state"],
+      "gewicht": 1
+    },
+    {
+      "id": "tt-018",
+      "typ": "tooltip",
+      "schluessel": "tooltip.state.ueberlastung",
+      "text": "Überlastung: auch bekannt als Normalzustand.",
+      "tags": ["tooltip", "state"],
+      "gewicht": 1
+    },
+    {
+      "id": "tt-019",
+      "typ": "tooltip",
+      "schluessel": "tooltip.stats.vp",
+      "text": "Verwaltungspunkte – der offizielle Gradmesser für innere Ruhe.",
+      "tags": ["tooltip", "stats"],
+      "gewicht": 1
+    },
+    {
+      "id": "tt-020",
+      "typ": "tooltip",
+      "schluessel": "tooltip.stats.aufwand",
+      "text": "Verwaltungsaufwand: wächst auch ohne Zutun – ein echtes Naturphänomen.",
+      "tags": ["tooltip", "stats"],
+      "gewicht": 1
+    }
+  ]
+}
