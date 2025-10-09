@@ -830,12 +830,34 @@ export function createSnapshot(state: SimulationState, config: BalancingConfig):
     };
   });
   
-  const powerups: PowerupSnapshot[] = state.aktivePowerUps.map(p => ({
-    id: p.id,
-    name: p.id, // TODO: Name aus Definition holen
-    restMs: p.endeZeit - now,
-    restSekunden: Math.ceil((p.endeZeit - now) / 1000),
-  }));
+  // Power-Ups: Aktive + Cooldowns
+  const powerups: PowerupSnapshot[] = [];
+  
+  // Aktive Power-Ups
+  for (const p of state.aktivePowerUps) {
+    powerups.push({
+      id: p.id,
+      name: p.id,
+      restMs: p.endeZeit - now,
+      restSekunden: Math.ceil((p.endeZeit - now) / 1000),
+    });
+  }
+  
+  // Power-Ups im Cooldown (aber nicht aktiv)
+  state.powerUpCooldowns.forEach((cooldownEnde, id) => {
+    // Nur hinzufügen wenn nicht bereits als aktiv gelistet
+    const isActive = state.aktivePowerUps.some(p => p.id === id);
+    if (!isActive && cooldownEnde > now) {
+      powerups.push({
+        id,
+        name: id,
+        restMs: 0,
+        restSekunden: 0,
+        cooldownRestMs: cooldownEnde - now,
+        cooldownRestSekunden: Math.ceil((cooldownEnde - now) / 1000),
+      });
+    }
+  });
   
   // Measures (TODO: Implementieren)
   const measures: any[] = [];

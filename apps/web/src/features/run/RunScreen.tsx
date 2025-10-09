@@ -320,12 +320,12 @@ export function RunScreen({
             </h3>
             <div className="space-y-2 max-h-64 overflow-y-auto">
               {powerupsData.powerups.map((powerup) => {
-                // Check if power-up is on cooldown
-                const activePowerUp = snapshot.powerups.find(
+                // Check if power-up is active or on cooldown
+                const powerUpSnapshot = snapshot.powerups.find(
                   (p) => p.id === powerup.id
                 );
-                const isActive = !!activePowerUp;
-                const onCooldown = false; // TODO: Track cooldowns
+                const isActive = !!(powerUpSnapshot && powerUpSnapshot.restMs > 0);
+                const onCooldown = !!(powerUpSnapshot?.cooldownRestMs && powerUpSnapshot.cooldownRestMs > 0);
 
                 return (
                   <button
@@ -351,9 +351,14 @@ export function RunScreen({
                     <div className="text-xs text-gray-500 mt-1">
                       {powerup.beschreibung}
                     </div>
-                    {isActive && (
+                    {isActive && powerUpSnapshot && (
                       <div className="text-xs text-green-600 mt-1">
-                        ✓ Aktiv ({Math.floor(activePowerUp!.restMs / 1000)}s)
+                        ✓ Aktiv ({powerUpSnapshot.restSekunden}s)
+                      </div>
+                    )}
+                    {onCooldown && powerUpSnapshot && (
+                      <div className="text-xs text-orange-600 mt-1">
+                        ⏱ Cooldown ({powerUpSnapshot.cooldownRestSekunden}s)
                       </div>
                     )}
                   </button>

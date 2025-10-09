@@ -102,6 +102,8 @@ export interface PowerupSnapshot {
   name: string;
   restMs: number;
   restSekunden: number; // Für UI-Anzeige
+  cooldownRestMs?: number; // Verbleibender Cooldown in ms (optional)
+  cooldownRestSekunden?: number; // Für UI-Anzeige
 }
 
 /**
