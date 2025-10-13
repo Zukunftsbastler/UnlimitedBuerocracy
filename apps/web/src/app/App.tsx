@@ -4,7 +4,7 @@
  * Hauptkomponente mit Tab-Navigation und Meta-Progression
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import type {
   SpielSnapshot,
   UiToWorkerMessage,
@@ -19,7 +19,31 @@ import { StatsScreen } from '../features/stats/StatsScreen';
 import { audioService } from '../services/audio/AudioService';
 import { db } from '../data/db';
 
+// Import stamp images for logo
+import Stempel01 from '../assets/stamps/approved/Stempel01.png';
+import Stempel02 from '../assets/stamps/approved/Stempel02.png';
+import Stempel03 from '../assets/stamps/approved/Stempel03.png';
+import Stempel04 from '../assets/stamps/approved/Stempel04.png';
+import Stempel05 from '../assets/stamps/approved/Stempel05.png';
+import Stempel06 from '../assets/stamps/approved/Stempel06.png';
+import Stempel07 from '../assets/stamps/approved/Stempel07.png';
+import Stempel08 from '../assets/stamps/approved/Stempel08.png';
+import Stempel09 from '../assets/stamps/approved/Stempel09.png';
+import Stempel10 from '../assets/stamps/approved/Stempel10.png';
+
+const STAMP_IMAGES = [
+  Stempel01, Stempel02, Stempel03, Stempel04, Stempel05,
+  Stempel06, Stempel07, Stempel08, Stempel09, Stempel10,
+];
+
 type TabType = 'run' | 'meta' | 'stats';
+
+interface StampLogo {
+  image: string;
+  rotation: number;
+  offsetX: number;
+  offsetY: number;
+}
 
 export function App() {
   const [worker, setWorker] = useState<Worker | null>(null);
@@ -27,6 +51,7 @@ export function App() {
   const [runActive, setRunActive] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('run');
   const [runEndStats, setRunEndStats] = useState<RunStats | null>(null);
+  const [stampCounter, setStampCounter] = useState(0); // Trigger für neuen Stempel
   
   // Meta-State (persistent)
   const [metaState, setMetaState] = useState<MetaZustand>({
@@ -104,6 +129,9 @@ export function App() {
           db.runstats.add(msg.stats).catch(err => {
             console.error('Failed to save run stats:', err);
           });
+          
+          // Neuen Stempel generieren
+          setStampCounter(prev => prev + 1);
           
           // Run-End-Modal anzeigen
           setRunEndStats(msg.stats);
@@ -227,6 +255,21 @@ export function App() {
     [worker, runActive]
   );
 
+  // Failed stamp penalty
+  const handleFailedStamp = useCallback(
+    (wasFumbled: boolean) => {
+      if (!worker || !runActive) return;
+
+      const msg: UiToWorkerMessage = {
+        type: 'PENALTY_FAILED_STAMP',
+        wasFumbled,
+      };
+
+      worker.postMessage(msg);
+    },
+    [worker, runActive]
+  );
+
   // Maßnahme aktivieren
   const handleActivateMeasure = useCallback(
     (id: string) => {
@@ -265,6 +308,21 @@ export function App() {
     [metaState, saveMetaState]
   );
 
+  // Generiere zufälligen Stempel basierend auf stampCounter
+  const stampLogo: StampLogo = useMemo(() => {
+    const randomIndex = Math.floor(Math.random() * STAMP_IMAGES.length);
+    const rotation = -15 + Math.random() * 30; // -15 bis +15 Grad
+    const offsetX = -15 + Math.random() * 30; // Horizontale Variation
+    const offsetY = -10 + Math.random() * 20; // Vertikale Variation
+    
+    return {
+      image: STAMP_IMAGES[randomIndex],
+      rotation,
+      offsetX,
+      offsetY,
+    };
+  }, [stampCounter]); // Ändert sich mit stampCounter
+
   // Run-End-Modal schließen
   const handleCloseRunEnd = useCallback(() => {
     setRunEndStats(null);
@@ -292,13 +350,38 @@ export function App() {
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                Bürokratie der Unendlichkeit
-              </h1>
-              <p className="text-sm text-gray-600 mt-1">
-                Ein kafkaeskes Incremental-Game
-              </p>
+            <div className="relative flex items-center gap-4">
+              {/* Stempel-Logo - links */}
+              <div
+                className="pointer-events-none flex-shrink-0"
+                style={{
+                  position: 'relative',
+                  left: `${stampLogo.offsetX}px`,
+                  top: `${stampLogo.offsetY}px`,
+                  transform: `rotate(${stampLogo.rotation}deg)`,
+                  opacity: 0.85,
+                  zIndex: 10,
+                }}
+              >
+                <img
+                  src={stampLogo.image}
+                  alt="Stempel"
+                  className="w-32 h-32 object-contain"
+                  style={{
+                    filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.3))',
+                  }}
+                />
+              </div>
+              
+              {/* Titel - leicht nach rechts versetzt */}
+              <div style={{ marginLeft: '-20px' }}>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Bürokratie der Unendlichkeit
+                </h1>
+                <p className="text-sm text-gray-600 mt-1">
+                  Ein kafkaeskes Incremental-Game
+                </p>
+              </div>
             </div>
             <div className="flex items-center gap-4">
               <button
@@ -410,6 +493,7 @@ export function App() {
                 onActivateMeasure={handleActivateMeasure}
                 onArchivieren={handleArchivieren}
                 onEndRun={handleEndRun}
+                onFailedStamp={handleFailedStamp}
               />
             )}
           </>

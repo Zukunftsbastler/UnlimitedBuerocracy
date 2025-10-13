@@ -16,6 +16,7 @@ import {
   createSimulationState,
   updateSimulation,
   handleClick,
+  handleFailedStamp,
   kaufeAutomatisierung,
   aktivierePowerUp,
   aktiviereMassnahme,
@@ -44,6 +45,9 @@ function getRunEndMessage(endGrund: string): string {
     pool = runEndComments.kommentare.energie_erschöpft;
   } else if (endGrund === 'KONZENTRATION') {
     pool = runEndComments.kommentare.konzentration_versagt;
+  } else if (endGrund === 'MOTIVATION') {
+    // Motivation auf 0 gefallen -> allgemeine Kommentare
+    pool = runEndComments.kommentare.allgemein;
   } else if (endGrund === 'UEBERLASTUNG' || endGrund === 'KOLLAPS') {
     pool = runEndComments.kommentare.ueberlastung_kollaps;
   } else if (endGrund === 'BENUTZER') {
@@ -292,6 +296,18 @@ self.onmessage = (event: MessageEvent<UiToWorkerMessage>) => {
         if (success) {
           console.log(`[Worker] Archiviert: ${msg.amount} AP`);
         }
+      }
+      break;
+
+    case 'PENALTY_FAILED_STAMP':
+      if (simulationState && running) {
+        // Nutze handleFailedStamp für konsistente Fehlerbehandlung
+        handleFailedStamp(simulationState, msg.wasFumbled);
+        
+        // -1 OP für fehlgeschlagenen Stempel
+        simulationState.ressourcen.OP = Math.max(0, simulationState.ressourcen.OP - 1);
+        
+        console.log(`[Worker] Failed stamp: -1 OP, motivation penalty ${msg.wasFumbled ? '(fumbled)' : ''}`);
       }
       break;
 

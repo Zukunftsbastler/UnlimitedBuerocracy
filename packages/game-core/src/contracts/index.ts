@@ -145,6 +145,7 @@ export type UiToWorkerMessage =
   | { type: 'AKTIVIERE_POWERUP'; id: string }
   | { type: 'AKTIVIERE_MASSNAHME'; id: string }
   | { type: 'ARCHIVIEREN'; amount: number }
+  | { type: 'PENALTY_FAILED_STAMP'; wasFumbled: boolean } // OP penalty for failed stamps
   | { type: 'RUN_STEUERUNG'; cmd: 'START' | 'ENDE' | 'PAUSE'; metaState?: MetaZustand }
   | { type: 'SNAPSHOT_ANFORDERN' };
 

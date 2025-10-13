@@ -30,9 +30,6 @@ export const StampOverlay: React.FC<StampOverlayProps> = ({
         alt="Stamp"
         className="w-32 h-32 object-contain"
         draggable={false}
-        style={{
-          filter: stamp.opacity && stamp.opacity < 0.5 ? 'blur(2px)' : undefined,
-        }}
       />
     </div>
   );

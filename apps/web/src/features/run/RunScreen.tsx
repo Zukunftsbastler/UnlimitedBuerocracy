@@ -26,6 +26,7 @@ interface RunScreenProps {
   onActivateMeasure: (id: string) => void;
   onArchivieren: (amount: number) => void;
   onEndRun: () => void;
+  onFailedStamp?: (wasFumbled: boolean) => void;
 }
 
 export function RunScreen({
@@ -36,8 +37,10 @@ export function RunScreen({
   onActivateMeasure,
   onArchivieren,
   onEndRun,
+  onFailedStamp,
 }: RunScreenProps) {
   const [automationTicks, setAutomationTicks] = useState(0);
+  const [concentrationBlink, setConcentrationBlink] = useState(false);
   const previousDpsApRef = useRef(0);
 
   // Track DPS-generated AP to trigger flying forms
@@ -205,11 +208,26 @@ export function RunScreen({
                 templates={formTemplates}
                 contents={formTexts}
                 onStamp={(result: StampResult) => {
-                  // Bei jedem Stempelversuch wird geklickt
-                  onClick();
+                  // Nur bei erfolgreichem Stempel AP vergeben
+                  if (result.success) {
+                    onClick();
+                  }
                   console.log('Stempel:', result.success ? 'Erfolg' : 'Fehlschlag', `Genauigkeit: ${Math.round(result.accuracy * 100)}%`);
                 }}
+                onFailedStamp={(wasFumbled: boolean) => {
+                  // Trigger worker penalty
+                  if (onFailedStamp) {
+                    onFailedStamp(wasFumbled);
+                  }
+                  
+                  // Trigger concentration blink on fumble
+                  if (wasFumbled) {
+                    setConcentrationBlink(true);
+                    setTimeout(() => setConcentrationBlink(false), 1500); // 3x blink @ 500ms each
+                  }
+                }}
                 concentration={zustaende.konzentration}
+                energy={zustaende.energie}
                 showDebug={false}
               />
             </div>
@@ -277,6 +295,7 @@ export function RunScreen({
                 label="Konzentration"
                 value={zustaende.konzentration}
                 color="purple"
+                shouldBlink={concentrationBlink}
               />
               <VitalBar
                 label="Motivation"
@@ -468,11 +487,13 @@ function VitalBar({
   value,
   color,
   inverted = false,
+  shouldBlink = false,
 }: {
   label: string;
   value: number;
   color: 'blue' | 'purple' | 'green' | 'yellow' | 'red';
   inverted?: boolean;
+  shouldBlink?: boolean;
 }) {
   const colorClasses = {
     blue: 'bg-blue-500',
@@ -482,18 +503,25 @@ function VitalBar({
     red: 'bg-red-500',
   };
 
-  const percentage = inverted ? 100 - value * 100 : value * 100;
+  // Auto-blink for critical values
+  // Normal values (energie, konzentration, motivation): blink wenn < 10%
+  // Inverted values (verwirrung, überlastung): blink wenn > 70%
+  const isCritical = inverted ? value > 0.7 : value < 0.1;
+  const blink = shouldBlink || isCritical;
+
   const displayValue = value * 100;
 
   return (
     <div>
       <div className="flex justify-between text-xs mb-1">
-        <span className="text-gray-600">{label}</span>
-        <span className="font-mono text-gray-900">
+        <span className={`text-gray-600 ${blink ? 'font-bold text-red-600' : ''}`}>
+          {label}
+        </span>
+        <span className={`font-mono ${blink ? 'text-red-600 font-bold' : 'text-gray-900'}`}>
           {displayValue.toFixed(0)}%
         </span>
       </div>
-      <div className="w-full bg-gray-200 rounded-full h-2">
+      <div className={`w-full bg-gray-200 rounded-full h-2 ${blink ? 'animate-pulse-fast' : ''}`}>
         <div
           className={`${colorClasses[color]} h-2 rounded-full transition-all duration-300`}
           style={{ width: `${value * 100}%` }}

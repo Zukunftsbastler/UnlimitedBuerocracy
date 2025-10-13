@@ -3,7 +3,7 @@
     {
       "id": "stabilisierung",
       "name": "Prozessstabilisierung",
-      "beschreibung": "Verringert vorübergehend die Zunahme des Aufwands",
+      "beschreibung": "Verringert vorübergehend die Zunahme des Aufwands um 50%",
       "icon": "🔷",
       "kosten": 12,
       "dauer": 30,
@@ -11,7 +11,7 @@
       "effekt": {
         "typ": "multiplikator",
         "ziel": "aufwandZuwachs",
-        "wert": 0.8
+        "wert": 0.5
       }
     },
     {

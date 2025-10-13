@@ -74,18 +74,20 @@ interface FormManagerProps {
   templates: FormTemplate[];
   contents: FormContent[];
   onStamp?: (result: StampResult) => void;
-  concentration?: number; // 0-1, affects stamp quality
+  onFailedStamp?: (wasFumbled: boolean) => void; // Called when stamp fails (for OP penalty)
+  concentration?: number; // 0-1, affects stamp quality & field size
+  energy?: number; // 0-1, affects stamp field visibility
   showDebug?: boolean; // Show stamp field boundaries
   animationConfig?: Partial<FormAnimationConfig>;
 }
 
 const DEFAULT_ANIMATION_CONFIG: FormAnimationConfig = {
-  entryDuration: 600,
-  exitDuration: 400,
+  entryDuration: 400,
+  exitDuration: 300,
   entryDelay: 0,
-  displayDuration: 300,
-  springStiffness: 80,
-  springDamping: 18,
+  displayDuration: 50, // Minimale Pause nach erfolgreichem Stempel
+  springStiffness: 100,
+  springDamping: 20,
 };
 
 /**
@@ -96,7 +98,9 @@ export const FormManager: React.FC<FormManagerProps> = ({
   templates,
   contents,
   onStamp,
+  onFailedStamp,
   concentration = 1.0,
+  energy = 1.0,
   showDebug = false,
   animationConfig = {},
 }) => {
@@ -218,6 +222,11 @@ export const FormManager: React.FC<FormManagerProps> = ({
         setTimeout(() => {
           setIsExiting(true);
         }, config.displayDuration);
+      } else {
+        // Failed stamp - trigger penalty callback
+        if (onFailedStamp) {
+          onFailedStamp(isFumbled);
+        }
       }
       // If failed (coffee stain or smudge), stamp stays on form and form remains for retry
     },
@@ -242,7 +251,7 @@ export const FormManager: React.FC<FormManagerProps> = ({
 
   return (
     <div className="relative w-full h-full overflow-hidden">
-      <AnimatePresence mode="wait" onExitComplete={handleExitComplete}>
+      <AnimatePresence mode="popLayout" onExitComplete={handleExitComplete}>
         {!isExiting && (
           <motion.div
             key={currentFormIndex}
@@ -277,6 +286,8 @@ export const FormManager: React.FC<FormManagerProps> = ({
                 stampField={stampField}
                 onStampClick={handleStampClick}
                 showStampField={showDebug}
+                concentration={concentration}
+                energy={energy}
               />
 
               {/* Stamp overlays - can have multiple */}

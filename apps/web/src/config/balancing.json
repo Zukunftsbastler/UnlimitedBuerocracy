@@ -2,7 +2,7 @@
   "kosten": {
     "automatisierung": {
       "basis": 10,
-      "wachstum": 1.5
+      "wachstum": 1.3
     },
     "kurse": {
       "basis": 8,

@@ -10,6 +10,8 @@ interface FormCanvasProps {
   onStampClick: (x: number, y: number) => void;
   showStampField?: boolean; // For debugging
   className?: string;
+  concentration?: number; // 0-1, affects stamp field size
+  energy?: number; // 0-1, affects stamp field opacity
 }
 
 /**
@@ -24,6 +26,8 @@ export const FormCanvas: React.FC<FormCanvasProps> = ({
   onStampClick,
   showStampField = false,
   className = '',
+  concentration = 1.0,
+  energy = 1.0,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -129,17 +133,20 @@ export const FormCanvas: React.FC<FormCanvasProps> = ({
         </div>
       </section>
 
-      {/* Stamp field indicator - always show subtle version */}
+      {/* Stamp field indicator - size based on concentration, opacity on energy */}
       <div
-        className="absolute rounded-full pointer-events-none transition-opacity duration-300"
+        className="absolute rounded-full pointer-events-none transition-all duration-300"
         style={{
-          left: `${(stampField.x - stampField.radius) * 100}%`,
-          top: `${(stampField.y - stampField.radius) * 100}%`,
-          width: `${stampField.radius * 2 * 100}%`,
-          height: `${stampField.radius * 2 * 100}%`,
-          background: 'radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 50%, rgba(59, 130, 246, 0) 100%)',
-          border: '2px dashed rgba(59, 130, 246, 0.3)',
-          boxShadow: 'inset 0 0 20px rgba(59, 130, 246, 0.1)',
+          // Size scales with concentration (smaller at low concentration)
+          left: `${(stampField.x - stampField.radius * concentration) * 100}%`,
+          top: `${(stampField.y - stampField.radius * concentration) * 100}%`,
+          width: `${stampField.radius * 2 * concentration * 100}%`,
+          height: `${stampField.radius * 2 * concentration * 100}%`,
+          // Opacity scales with energy (fainter at low energy), but starts stronger
+          opacity: 0.4 + energy * 0.6, // 0.4 to 1.0
+          background: 'radial-gradient(circle, rgba(59, 130, 246, 0.35) 0%, rgba(59, 130, 246, 0.15) 50%, rgba(59, 130, 246, 0) 100%)',
+          border: '2px dashed rgba(59, 130, 246, 0.5)',
+          boxShadow: 'inset 0 0 20px rgba(59, 130, 246, 0.2)',
         }}
       />
       

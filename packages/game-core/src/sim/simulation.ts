@@ -284,10 +284,28 @@ function updateMotivation(state: SimulationState, dt: number, config: BalancingC
   // Meta-Upgrades: Stabilere Motivation (weniger Drift)
   const motivationDriftMult = (state as any).metaMultipliers?.motivationDrift || 1;
   
-  // Leichter passiver Drift zu 0.5 (Neutralzustand) - reduziert durch Upgrade
-  const target = 0.5;
-  const diff = target - state.zustaende.motivation;
-  state.zustaende.motivation += diff * 0.1 * motivationDriftMult * dt;
+  // Prüfe aktive Maßnahmen für Motivation-Boni
+  const now = Date.now();
+  let motivationBonus = 0;
+  
+  for (const massnahme of state.aktiveMassnahmen) {
+    if (massnahme.endeZeit > 0 && massnahme.endeZeit > now) {
+      for (const effekt of massnahme.effekte) {
+        if (effekt.ziel === 'motivation' && effekt.typ === 'addition') {
+          // Addition-Effekte wirken als kontinuierlicher Bonus pro Sekunde
+          motivationBonus += effekt.wert * dt;
+        }
+      }
+    }
+  }
+  
+  // Konstanter passiver Abstieg
+  // Motivation fällt permanent um 0.02 pro Sekunde
+  const passiveFall = 0.02 * motivationDriftMult * dt;
+  state.zustaende.motivation -= passiveFall;
+  
+  // Motivation-Bonus durch Maßnahmen anwenden
+  state.zustaende.motivation += motivationBonus;
   
   state.zustaende.motivation = clamp01(state.zustaende.motivation);
 }
@@ -301,6 +319,19 @@ function updateAutomation(state: SimulationState, dt: number, config: BalancingC
   // Meta-Upgrades: DPS-Bonus holen
   const dpsMult = (state as any).metaMultipliers?.dpsBonus || 1;
   
+  // Aktive Maßnahmen: Aufwand-Zuwachs Multiplikator holen
+  const now = Date.now();
+  let aufwandZuwachsMult = 1.0;
+  for (const massnahme of state.aktiveMassnahmen) {
+    if (massnahme.endeZeit === 0 || massnahme.endeZeit > now) {
+      for (const effekt of massnahme.effekte) {
+        if (effekt.ziel === 'aufwandZuwachs' && effekt.typ === 'multiplikator') {
+          aufwandZuwachsMult *= effekt.wert;
+        }
+      }
+    }
+  }
+  
   for (const auto of state.automatisierungen) {
     if (!auto.aktiviert || auto.stufe === 0) continue;
     
@@ -312,9 +343,9 @@ function updateAutomation(state: SimulationState, dt: number, config: BalancingC
     state.ressourcen.AP += output * dt;
     totalDPS += output;
     
-    // Aufwand durch Automation
+    // Aufwand durch Automation - MIT Zuwachs-Multiplikator
     const chaosBeitrag = 0.02 * auto.stufe * dt;
-    state.aufwand += chaosBeitrag * config.aufwand.chaosFaktor;
+    state.aufwand += chaosBeitrag * config.aufwand.chaosFaktor * aufwandZuwachsMult;
   }
   
   // Stats aktualisieren (AP Gesamt)
@@ -349,11 +380,30 @@ function updateAufwand(state: SimulationState, dt: number, config: BalancingConf
   // Meta-Upgrades: Chaos-Resistenz (weniger Aufwand-Akkumulation)
   const chaosResistenz = (state as any).metaMultipliers?.chaosResistenz || 1;
   
+  // Aktive Maßnahmen: Aufwand-Zuwachs Multiplikator prüfen
+  const now = Date.now();
+  let aufwandZuwachsMult = 1.0;
+  
+  // Entferne abgelaufene Maßnahmen
+  state.aktiveMassnahmen = state.aktiveMassnahmen.filter(m => m.endeZeit === 0 || m.endeZeit > now);
+  
+  // Prüfe aktive Maßnahmen für aufwandZuwachs-Modifikatoren
+  for (const massnahme of state.aktiveMassnahmen) {
+    if (massnahme.endeZeit === 0 || massnahme.endeZeit > now) {
+      for (const effekt of massnahme.effekte) {
+        if (effekt.ziel === 'aufwandZuwachs' && effekt.typ === 'multiplikator') {
+          aufwandZuwachsMult *= effekt.wert;
+        }
+      }
+    }
+  }
+  
   // Dämpfung (z.B. durch Kurse/Privilegien)
   const dämpfung = cfg.dämpfung * state.klarheit;
   state.aufwand -= dämpfung * dt;
   
   // Chaos-Resistenz anwenden (passiver Abbau verstärkt)
+  // WICHTIG: Dies ist ABBAU, kein Zuwachs - daher NICHT vom Zuwachs-Multiplikator betroffen
   if (chaosResistenz < 1) {
     const extraDämpfung = (1 - chaosResistenz) * 0.05;
     state.aufwand -= extraDämpfung * dt;
@@ -485,6 +535,13 @@ function checkRunEnd(state: SimulationState, config: BalancingConfig): void {
     return;
   }
   
+  // Motivation auf Null gefallen
+  if (state.zustaende.motivation <= 0) {
+    state.runEnded = true;
+    state.endGrund = 'MOTIVATION';
+    return;
+  }
+  
   // Zeit abgelaufen
   if (state.vergangenMin >= state.arbeitstagMin) {
     state.runEnded = true;
@@ -508,6 +565,25 @@ function checkRunEnd(state: SimulationState, config: BalancingConfig): void {
 }
 
 /**
+ * Fehlgeschlagener Stempel-Versuch
+ * Wird aufgerufen wenn ein Stempel fehlschlägt (Klecks oder Kaffeefleck)
+ */
+export function handleFailedStamp(
+  state: SimulationState,
+  wasFumbled: boolean
+): void {
+  if (state.runEnded || state.paused) return;
+  
+  // Motivation sinkt deutlich bei Fehlschlag
+  const motivationVerlust = wasFumbled ? 0.15 : 0.08; // Mehr Verlust bei Fumble
+  state.zustaende.motivation -= motivationVerlust;
+  state.zustaende.motivation = clamp01(state.zustaende.motivation);
+  
+  // Fehler in Stats tracken
+  state.stats.fehler++;
+}
+
+/**
  * Benutzer-Klick verarbeiten
  */
 export function handleClick(
@@ -523,6 +599,18 @@ export function handleClick(
   }
   
   const now = Date.now();
+  
+  // Aktive Maßnahmen: Aufwand-Zuwachs Multiplikator holen
+  let aufwandZuwachsMult = 1.0;
+  for (const massnahme of state.aktiveMassnahmen) {
+    if (massnahme.endeZeit === 0 || massnahme.endeZeit > now) {
+      for (const effekt of massnahme.effekte) {
+        if (effekt.ziel === 'aufwandZuwachs' && effekt.typ === 'multiplikator') {
+          aufwandZuwachsMult *= effekt.wert;
+        }
+      }
+    }
+  }
   
   // Energie-Kosten (steigen mit Aufwand)
   const energieKosten = config.zustand.energieVerbrauchProKlick * (1 + state.aufwand);
@@ -551,8 +639,8 @@ export function handleClick(
     state.ressourcen.AP += ertrag;
   }
   
-  // Aufwand steigt mit jedem Klick
-  state.aufwand += 0.002;
+  // Aufwand steigt mit jedem Klick - MIT Zuwachs-Multiplikator
+  state.aufwand += 0.002 * aufwandZuwachsMult;
   
   // Stats
   state.stats.klicks++;
@@ -583,9 +671,20 @@ export function kaufeAutomatisierung(
     state.automatisierungen.push(auto);
   }
   
-  // Kosten berechnen
+  // Map der Basis-Kosten für jede Automatisierung (aus automations.json)
+  const baseCosts: Record<string, number> = {
+    'auto_basic': 10,
+    'auto_formular': 50,
+    'auto_stempel': 150,
+    'auto_ablage': 400,
+    'auto_zentrale': 1000,
+    'auto_ki': 2500,
+  };
+  
+  // Kosten berechnen mit individueller Basis
   const cfg = config.kosten.automatisierung;
-  let kosten = cfg.basis * Math.pow(cfg.wachstum, auto.stufe);
+  const basisKosten = baseCosts[id] || cfg.basis; // Fallback auf generische Basis
+  let kosten = basisKosten * Math.pow(cfg.wachstum, auto.stufe);
   
   // Meta-Upgrades: Kosten-Reduktion anwenden
   const kostenMult = (state as any).metaMultipliers?.autoKosten || 1;
@@ -815,20 +914,44 @@ export function createSnapshot(state: SimulationState, config: BalancingConfig):
     vergangenMin: state.vergangenMin,
   };
   
-  const automatisierungen: AutomationSnapshot[] = state.automatisierungen.map(a => {
+  // WICHTIG: Zeige ALLE Automatisierungen im Snapshot, auch die noch nicht gekauften
+  // Dies ist notwendig damit die UI die korrekten Kosten mit Meta-Upgrade-Rabatten anzeigt
+  const automatisierungen: AutomationSnapshot[] = [];
+  
+  // Map der Basis-Kosten für jede Automatisierung (aus automations.json)
+  const baseCosts: Record<string, number> = {
+    'auto_basic': 10,
+    'auto_formular': 50,
+    'auto_stempel': 150,
+    'auto_ablage': 400,
+    'auto_zentrale': 1000,
+    'auto_ki': 2500,
+  };
+  
+  const allAutoIds = Object.keys(baseCosts);
+  
+  for (const autoId of allAutoIds) {
+    const existingAuto = state.automatisierungen.find(a => a.id === autoId);
+    const stufe = existingAuto?.stufe || 0;
+    const aktiviert = existingAuto?.aktiviert ?? true;
+    
     const cfg = config.kosten.automatisierung;
+    const basisKosten = baseCosts[autoId];
+    
     // Meta-Upgrades berücksichtigen
     const kostenMult = (state as any).metaMultipliers?.autoKosten || 1;
-    let kosten = cfg.basis * Math.pow(cfg.wachstum, a.stufe);
+    
+    // Kosten = Basis * (Wachstum ^ Stufe) * Meta-Multiplikator
+    let kosten = basisKosten * Math.pow(cfg.wachstum, stufe);
     kosten *= kostenMult;
     
-    return {
-      id: a.id,
-      stufe: a.stufe,
-      output: a.aktiviert ? a.stufe * 1.0 : 0,
+    automatisierungen.push({
+      id: autoId,
+      stufe,
+      output: aktiviert ? stufe * 1.0 : 0,
       kosten,
-    };
-  });
+    });
+  }
   
   // Power-Ups: Aktive + Cooldowns
   const powerups: PowerupSnapshot[] = [];
