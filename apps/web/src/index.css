@@ -2,6 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
+/* IBM Plex Fonts for Form Rendering */
+@import '@fontsource/ibm-plex-sans/400.css';
+@import '@fontsource/ibm-plex-sans/600.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+
+:root {
+  --form-font: "IBM Plex Sans", system-ui, Arial, Helvetica, sans-serif;
+  --form-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+.form-text-justified {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+
+.form-print-grain {
+  position: relative;
+}
+
+.form-print-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  background:
+    radial-gradient(circle at 20% 30%, #000 0 0.5px, transparent 1px),
+    radial-gradient(circle at 70% 60%, #000 0 0.5px, transparent 1px);
+  mix-blend-mode: multiply;
+  filter: contrast(120%) brightness(95%);
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

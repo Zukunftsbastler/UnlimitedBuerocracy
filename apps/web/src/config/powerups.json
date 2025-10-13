@@ -5,8 +5,8 @@
       "name": "Kaffeepause",
       "icon": "☕",
       "beschreibung": "Eine Tasse Kaffee belebt Körper und Geist",
-      "dauerSek": 30,
-      "cooldownSek": 90,
+      "dauerSek": 20,
+      "cooldownSek": 0,
       "effekte": [
         { "ziel": "energie", "delta": 0.25, "typ": "sofort" },
         { "ziel": "konzentration", "delta": 0.15, "typ": "sofort" }

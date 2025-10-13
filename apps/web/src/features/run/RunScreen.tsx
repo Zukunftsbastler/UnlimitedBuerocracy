@@ -4,11 +4,19 @@
  * Haupt-Spielbildschirm während eines aktiven Runs
  */
 
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import type { SpielSnapshot } from '@game-core/contracts';
+import { FormManager, FlyingFormsContainer } from '../forms';
+import type { StampResult, FormTemplate, FormContent } from '../forms';
 import automationsData from '../../config/automations.json';
 import powerupsData from '../../config/powerups.json';
 import measuresData from '../../config/measures.json';
+import formTemplatesData from '../forms/data/formTemplates.json';
+import formTextsData from '../../data/form_texts.json';
+
+// Cast imported JSON to proper types
+const formTemplates = formTemplatesData as FormTemplate[];
+const formTexts = formTextsData as FormContent[];
 
 interface RunScreenProps {
   snapshot: SpielSnapshot | null;
@@ -29,18 +37,40 @@ export function RunScreen({
   onArchivieren,
   onEndRun,
 }: RunScreenProps) {
-  // Keyboard controls
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.code === 'Space' || e.key === ' ') {
-        e.preventDefault();
-        onClick();
-      }
-    };
+  const [automationTicks, setAutomationTicks] = useState(0);
+  const previousDpsApRef = useRef(0);
 
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [onClick]);
+  // Track DPS-generated AP to trigger flying forms
+  useEffect(() => {
+    if (!snapshot) return;
+    
+    const currentDpsAp = Math.floor(snapshot.ressourcen.AP);
+    const previousDpsAp = previousDpsApRef.current;
+    
+    // Check if AP increased by DPS (not by clicks)
+    if (currentDpsAp > previousDpsAp && snapshot.raten.dps > 0) {
+      const apGained = currentDpsAp - previousDpsAp;
+      // Only count significant gains (> 1) to avoid too many forms
+      if (apGained > 0 && apGained < 100) {
+        setAutomationTicks(prev => prev + Math.min(apGained, 5)); // Max 5 forms per update
+      }
+    }
+    
+    previousDpsApRef.current = currentDpsAp;
+  }, [snapshot?.ressourcen.AP, snapshot?.raten.dps]);
+
+  // Keyboard controls disabled - forms handle interaction
+  // useEffect(() => {
+  //   const handleKeyPress = (e: KeyboardEvent) => {
+  //     if (e.code === 'Space' || e.key === ' ') {
+  //       e.preventDefault();
+  //       onClick();
+  //     }
+  //   };
+  //   window.addEventListener('keydown', handleKeyPress);
+  //   return () => window.removeEventListener('keydown', handleKeyPress);
+  // }, [onClick]);
+  
   if (!snapshot) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -56,12 +86,16 @@ export function RunScreen({
   const bgColor = `hsl(${hue}, 40%, 95%)`;
 
   return (
-    <div
-      className="space-y-6"
-      style={{ backgroundColor: bgColor, transition: 'background-color 1s ease' }}
-    >
-      {/* Hauptbereich */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <>
+      {/* Flying Forms for Automation Visualization */}
+      <FlyingFormsContainer automationTicks={automationTicks} />
+      
+      <div
+        className="space-y-6"
+        style={{ backgroundColor: bgColor, transition: 'background-color 1s ease' }}
+      >
+        {/* Hauptbereich */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Linke Spalte: Ressourcen & Stats */}
         <div className="space-y-4">
           {/* Ressourcen-Karte */}
@@ -156,33 +190,28 @@ export function RunScreen({
 
         {/* Mittlere Spalte: Klick-Panel */}
         <div className="space-y-4">
-          {/* Haupt-Klickbereich */}
-          <div className="bg-white p-8 rounded-lg shadow-lg">
-            <div className="text-center space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                  Aktenbearbeitung
-                </h2>
-                <p className="text-sm text-gray-600">
-                  Klicken Sie, um Dokumente zu bearbeiten
-                </p>
-              </div>
-
-              <button
-                onClick={onClick}
-                className="w-full py-16 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white text-xl font-bold rounded-lg shadow-lg transition-all transform hover:scale-105 active:scale-95"
-                style={{
-                  transition: 'all 0.2s ease',
+          {/* Haupt-Klickbereich - Form Stamping System */}
+          <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-lg shadow-lg overflow-hidden">
+            <div className="p-4 bg-white border-b border-gray-200">
+              <h2 className="text-xl font-bold text-gray-900 text-center">
+                Aktenbearbeitung
+              </h2>
+              <p className="text-xs text-gray-600 text-center mt-1">
+                Klicken Sie auf das blaue Stempelfeld
+              </p>
+            </div>
+            <div className="h-[600px]">
+              <FormManager
+                templates={formTemplates}
+                contents={formTexts}
+                onStamp={(result: StampResult) => {
+                  // Bei jedem Stempelversuch wird geklickt
+                  onClick();
+                  console.log('Stempel:', result.success ? 'Erfolg' : 'Fehlschlag', `Genauigkeit: ${Math.round(result.accuracy * 100)}%`);
                 }}
-              >
-                🖊️
-                <br />
-                <span className="text-sm mt-2 block">Stempeln</span>
-              </button>
-
-              <div className="text-xs text-gray-500">
-                Leertaste oder Mausklick
-              </div>
+                concentration={zustaende.konzentration}
+                showDebug={false}
+              />
             </div>
           </div>
 
@@ -427,6 +456,7 @@ export function RunScreen({
         </div>
       </div>
     </div>
+    </>
   );
 }
 

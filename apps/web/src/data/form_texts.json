@@ -1,0 +1,122 @@
+[
+  {
+    "title": "Antrag auf Antrag",
+    "text": "Ich beantrage hiermit die Ausstellung eines Formulars, das mich berechtigt, ein anderes Formular zu beantragen. Die Begründung erfolgt zu einem späteren Zeitpunkt, sofern vorgesehen."
+  },
+  {
+    "title": "Selbstbestätigung der Fremdprüfung",
+    "text": "Ich bestätige hiermit, dass ich geprüft wurde, ohne zu wissen, worin die Prüfung bestand. Das Ergebnis gilt als gültig, solange niemand widerspricht."
+  },
+  {
+    "title": "Meldung ordnungsgemäßer Unklarheit",
+    "text": "Dieser Vorgang wurde ordnungsgemäß begonnen, ohne dass Klarheit über Inhalt, Zweck oder Verantwortlichkeit besteht. Zur Wahrung der Form wird die Unklarheit hiermit offiziell gemeldet."
+  },
+  {
+    "title": "Protokoll der Verfahrenssicherung",
+    "text": "Alle Verfahren wurden ordnungsgemäß gesichert, ihre Sicherung dokumentiert und die Dokumentation archiviert. Die Archivierung des Archivs wird gesondert protokolliert."
+  },
+  {
+    "title": "Anfrage zur Zweckfeststellung",
+    "text": "Ich beantrage die offizielle Feststellung des Zwecks dieses Antrags. Sollte sich kein Zweck feststellen lassen, gilt der Antrag als zweckmäßig."
+  },
+  {
+    "title": "Mitteilung über Mitteilungsbedarf",
+    "text": "Hiermit teile ich mit, dass ich mitzuteilen habe, was noch nicht mitgeteilt wurde. Die Mitteilung erfolgt umgehend, sobald der Mitteilungsinhalt bekannt ist."
+  },
+  {
+    "title": "Bestätigung der Erledigung des Nichts",
+    "text": "Ich bestätige, dass nichts zu tun war und dass dieses Nichts erfolgreich erledigt wurde. Etwaige Reste des Nichts sind zu vernachlässigen."
+  },
+  {
+    "title": "Bericht über anhaltende Bearbeitung",
+    "text": "Der Bearbeitungsvorgang ist in Bearbeitung. Sobald die Bearbeitung beendet ist, beginnt sie von Neuem."
+  },
+  {
+    "title": "Vorläufige Endfassung",
+    "text": "Diese Fassung ist endgültig, bis eine neue vorläufige Fassung beschlossen wird. Korrekturen sind nicht vorgesehen, aber obligatorisch."
+  },
+  {
+    "title": "Rückmeldung zur Rückmeldung",
+    "text": "Ich bestätige den Erhalt der Rückmeldung über meine Rückmeldung. Eine Rückmeldung zur Rückmeldung der Rückmeldung ist in Vorbereitung."
+  },
+  {
+    "title": "Antrag auf Verlängerung der Wartezeit",
+    "text": "Hiermit beantrage ich, die bestehende Wartezeit zu verlängern, um die Wartezeit auf eine Entscheidung angemessen zu gestalten."
+  },
+  {
+    "title": "Mitteilung über Nichtvorliegen von Mitteilungen",
+    "text": "Es liegen derzeit keine Mitteilungen vor. Diese Mitteilung dient der Vollständigkeit der Mitteilungen über Nichtmitteilungen."
+  },
+  {
+    "title": "Nachtrag zum Nachtrag",
+    "text": "Der ursprüngliche Nachtrag wurde ergänzt, um Lücken im Nachtragwesen zu schließen. Weitere Nachträge sind in Planung."
+  },
+  {
+    "title": "Anforderung unnötiger Bestätigung",
+    "text": "Zur Wahrung der Ordnung wird eine Bestätigung für einen Vorgang verlangt, der keine Bestätigung erfordert."
+  },
+  {
+    "title": "Bericht über die Existenz des Berichts",
+    "text": "Hiermit wird bestätigt, dass ein Bericht existiert. Sein Inhalt ist nebensächlich, seine Existenz ausreichend."
+  },
+  {
+    "title": "Vermerk über ordnungsgemäße Abwesenheit",
+    "text": "Die Abwesenheit wurde festgestellt und protokolliert. Der Betroffene wurde über seine Abwesenheit informiert."
+  },
+  {
+    "title": "Bescheinigung der Sinnlosigkeit",
+    "text": "Dieser Vorgang erfüllt keinen erkennbaren Zweck und wurde daher erfolgreich abgeschlossen."
+  },
+  {
+    "title": "Vorläufige Nichtentscheidung",
+    "text": "Eine Entscheidung wurde vorbereitet, jedoch vertagt, um ihre Unverbindlichkeit sicherzustellen."
+  },
+  {
+    "title": "Antrag auf formlose Form",
+    "text": "Ich beantrage eine formlose Form, die formlos genug ist, um formal anerkannt zu werden."
+  },
+  {
+    "title": "Dokumentation der Dokumentation",
+    "text": "Dieser Bericht beschreibt die Erstellung des Berichts, der die Dokumentation dokumentiert."
+  },
+  {
+    "title": "Rückfrage zur Rückfrage",
+    "text": "Zur Klärung der Rückfrage wird eine Rückfrage gestellt, deren Antwort zur neuen Rückfrage führt."
+  },
+  {
+    "title": "Begründung ohne Grund",
+    "text": "Hiermit wird eine Begründung abgegeben, deren Grund entfällt, um den Begründungspflichten zu genügen."
+  },
+  {
+    "title": "Voranmeldung zur Abmeldung",
+    "text": "Ich melde hiermit an, dass ich beabsichtige, mich demnächst abzumelden."
+  },
+  {
+    "title": "Formblatt zur Unterschriftenbeschaffung",
+    "text": "Bitte unterschreiben Sie hier, um zu bestätigen, dass Sie unterschreiben wollten."
+  },
+  {
+    "title": "Anfrage zur Bestätigung des Offensichtlichen",
+    "text": "Ich bitte um formelle Bestätigung einer Tatsache, die bereits von allen anerkannt, aber noch nicht gestempelt ist."
+  },
+  {
+    "title": "Eintrag in das Register der Register",
+    "text": "Dieser Vorgang wird im Register der Register geführt, um die Existenz des Registers zu registrieren."
+  },
+  {
+    "title": "Berichtigung der fehlerfreien Fassung",
+    "text": "Die fehlerfreie Fassung wurde korrigiert, um die formale Pflicht zur Berichtigung zu erfüllen."
+  },
+  {
+    "title": "Antrag auf sinnvolle Zuständigkeit",
+    "text": "Ich beantrage, dass eine zuständige Stelle gefunden wird, die sich zuständig fühlt."
+  },
+  {
+    "title": "Feststellung der Verfahrenskonformität",
+    "text": "Dieses Formular entspricht allen Vorschriften, einschließlich jener, die nicht mehr gültig sind."
+  },
+  {
+    "title": "Bestätigung des unbestätigten Status",
+    "text": "Der Status wurde überprüft und bleibt unbestätigt. Diese Bestätigung dient der Transparenz."
+  }
+]

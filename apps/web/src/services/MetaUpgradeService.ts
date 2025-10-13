@@ -73,10 +73,13 @@ export class MetaUpgradeService {
 
   /**
    * Chaos-Resistenz
+   * Skaliert über 5 Stufen von -20% bis -99% Aufwand-Reduktion
    */
   static getChaosResistenz(metaState: MetaZustand): number {
     const stufe = metaState.freigeschalteteKurse.filter(k => k.startsWith('chaos_resist')).length;
-    return Math.pow(0.8, stufe); // -20% Aufwand pro Stufe
+    // Progressiv ansteigende Reduktion über 5 Stufen
+    const reductions = [1.0, 0.8, 0.6, 0.4, 0.2, 0.01];
+    return reductions[Math.min(stufe, 5)] || 1.0;
   }
 
   /**

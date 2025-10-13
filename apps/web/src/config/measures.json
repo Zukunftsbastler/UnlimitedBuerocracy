@@ -5,9 +5,9 @@
       "name": "Prozessstabilisierung",
       "beschreibung": "Verringert vorübergehend die Zunahme des Aufwands",
       "icon": "🔷",
-      "kosten": 20,
+      "kosten": 12,
       "dauer": 30,
-      "cooldown": 30,
+      "cooldown": 10,
       "effekt": {
         "typ": "multiplikator",
         "ziel": "aufwandZuwachs",
