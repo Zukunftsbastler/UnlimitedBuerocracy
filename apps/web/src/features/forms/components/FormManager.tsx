@@ -11,6 +11,7 @@ import type {
   FormAnimationConfig,
 } from '../types';
 import { calculateDistance, isClickInStampField } from '../hooks/useFormAnimation';
+import { audioService } from '../../../services/audio/AudioService';
 
 // Import stamp images
 import Stempel01 from '../../../assets/stamps/approved/Stempel01.png';
@@ -189,6 +190,9 @@ export const FormManager: React.FC<FormManagerProps> = ({
           position: { x, y },
           type: stampType,
         };
+        
+        // Audio: stamp sound
+        audioService.playRandomStamp();
       } else if (inStampField && isFumbled) {
         // Fumbled! In stamp field but low concentration -> smudge
         stampType = 'failed';
@@ -198,6 +202,10 @@ export const FormManager: React.FC<FormManagerProps> = ({
           position: { x, y },
           type: stampType,
         };
+        
+        // Audio: stamp sound + frustration sound
+        audioService.playRandomStamp();
+        audioService.playRandomFrustration();
       } else {
         // Missed stamp field: coffee stain
         stampType = 'special';
@@ -207,6 +215,9 @@ export const FormManager: React.FC<FormManagerProps> = ({
           position: { x, y },
           type: stampType,
         };
+        
+        // Audio: coffee spill sound (no stamp sound)
+        audioService.playCoffeeSpill();
       }
 
       // Place stamp visual

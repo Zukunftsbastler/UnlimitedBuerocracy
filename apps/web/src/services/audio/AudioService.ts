@@ -115,10 +115,28 @@ export class AudioService {
    */
   playMusic(id: string, options?: { loop?: boolean; fadeMs?: number }): void {
     const asset = this.assets.get(id);
-    if (!asset || !asset.buffer || !this.context) return;
+    if (!asset || !asset.buffer || !this.context) {
+      console.warn(`[AudioService] Cannot play music ${id}: asset or context missing`);
+      return;
+    }
 
-    // Stoppe vorherige Musik
-    this.stopMusic(options?.fadeMs);
+    // Stoppe vorherige Musik sofort (ohne Fade)
+    const oldSource = this.activeSources.get('music');
+    if (oldSource) {
+      try {
+        oldSource.stop();
+      } catch (e) {
+        // Already stopped
+      }
+      this.activeSources.delete('music');
+    }
+
+    // Reset music bus volume
+    const musicBus = this.buses.get('music');
+    if (musicBus) {
+      musicBus.gain.cancelScheduledValues(this.context.currentTime);
+      musicBus.gain.value = 0.5; // Default music volume
+    }
 
     const source = this.context.createBufferSource();
     source.buffer = asset.buffer;
@@ -128,11 +146,10 @@ export class AudioService {
     gain.gain.value = this.dbToLinear(asset.gain);
     
     source.connect(gain);
-    const bus = this.buses.get('music');
-    if (bus) gain.connect(bus);
+    if (musicBus) gain.connect(musicBus);
 
     // Fade-In
-    if (options?.fadeMs) {
+    if (options?.fadeMs && options.fadeMs > 0) {
       gain.gain.setValueAtTime(0, this.context.currentTime);
       gain.gain.linearRampToValueAtTime(
         this.dbToLinear(asset.gain),
@@ -142,6 +159,7 @@ export class AudioService {
 
     source.start();
     this.activeSources.set('music', source);
+    console.log(`[AudioService] Started music: ${id}`);
   }
 
   /**
@@ -151,25 +169,77 @@ export class AudioService {
     const source = this.activeSources.get('music');
     if (!source || !this.context) return;
 
-    if (fadeMs) {
-      const gain = source.context.createGain();
-      gain.gain.setValueAtTime(1, this.context.currentTime);
-      gain.gain.linearRampToValueAtTime(0, this.context.currentTime + fadeMs / 1000);
-      setTimeout(() => {
+    try {
+      if (fadeMs && fadeMs > 0) {
+        // Fade-out durch Bus-Lautstärke
+        const musicBus = this.buses.get('music');
+        if (musicBus) {
+          const currentVolume = musicBus.gain.value;
+          musicBus.gain.setValueAtTime(currentVolume, this.context.currentTime);
+          musicBus.gain.linearRampToValueAtTime(0, this.context.currentTime + fadeMs / 1000);
+        }
+        
+        setTimeout(() => {
+          try {
+            source.stop();
+          } catch (e) {
+            // Already stopped
+          }
+          this.activeSources.delete('music');
+          
+          // Reset bus volume
+          if (musicBus) {
+            musicBus.gain.value = 0.5; // Default music volume
+          }
+        }, fadeMs);
+      } else {
         source.stop();
         this.activeSources.delete('music');
-      }, fadeMs);
-    } else {
-      source.stop();
+      }
+    } catch (e) {
+      console.warn('[AudioService] Error stopping music:', e);
       this.activeSources.delete('music');
     }
   }
 
   /**
-   * Spielt Ambience ab
+   * Spielt Ambience ab (looped)
    */
   playAmb(id: string, loop: boolean = true): void {
-    this.playSound(id, 'amb', { volume: 1 });
+    const asset = this.assets.get(id);
+    if (!asset || !asset.buffer || !this.context) return;
+
+    // Stoppe vorherige Ambience
+    this.stopAmb();
+
+    const source = this.context.createBufferSource();
+    source.buffer = asset.buffer;
+    source.loop = loop;
+
+    const gain = this.context.createGain();
+    gain.gain.value = this.dbToLinear(asset.gain);
+    
+    source.connect(gain);
+    const bus = this.buses.get('amb');
+    if (bus) gain.connect(bus);
+
+    source.start();
+    this.activeSources.set('amb', source);
+  }
+
+  /**
+   * Stoppt Ambience
+   */
+  stopAmb(): void {
+    const source = this.activeSources.get('amb');
+    if (!source) return;
+
+    try {
+      source.stop();
+    } catch (e) {
+      // Already stopped
+    }
+    this.activeSources.delete('amb');
   }
 
   /**
@@ -238,13 +308,30 @@ export class AudioService {
   /**
    * Event-Hooks (werden von RunController aufgerufen)
    */
-  onRunStart(): void {
-    // Optional: Starte Ambience
+  onRunStart(ambienceId?: string): void {
+    // Stoppe Menu-Musik
+    this.stopMusic(500);
+    
+    // Starte Ambience wenn ID gegeben
+    if (ambienceId) {
+      // Warte kurz nach Musik-Fade
+      setTimeout(() => {
+        this.playAmb(ambienceId, true);
+      }, 600);
+    }
   }
 
   onRunEnd(): void {
-    // Optional: Fade-Out Musik
-    this.stopMusic(800);
+    console.log('[AudioService] Run ended - stopping ambience and restarting menu music');
+    
+    // Stoppe Ambience
+    this.stopAmb();
+    
+    // Starte Menu-Musik wieder (mit etwas Delay)
+    setTimeout(() => {
+      console.log('[AudioService] Attempting to restart menu music');
+      this.playMusic('menu_music', { loop: true, fadeMs: 1000 });
+    }, 600);
   }
 
   onAudit(): void {
@@ -267,6 +354,71 @@ export class AudioService {
   /**
    * Gibt Debug-Infos zurück
    */
+  /**
+   * Lädt alle Game-Assets
+   */
+  async loadGameAssets(): Promise<void> {
+    // Menu Music
+    await this.loadAsset('menu_music', '/src/assets/audio/music/main_menu.mp3', -3, true);
+    
+    // Ambience (3 Tracks)
+    await this.loadAsset('amb01', '/src/assets/audio/ambience/ambience01.mp3', -6, true);
+    await this.loadAsset('amb02', '/src/assets/audio/ambience/ambience02.mp3', -6, true);
+    await this.loadAsset('amb03', '/src/assets/audio/ambience/ambience03.mp3', -6, true);
+    
+    // Stamp sounds (3)
+    await this.loadAsset('stamp01', '/src/assets/audio/stamps/stamp01.mp3', -2);
+    await this.loadAsset('stamp02', '/src/assets/audio/stamps/stamp02.mp3', -2);
+    await this.loadAsset('stamp03', '/src/assets/audio/stamps/stamp03.mp3', -2);
+    
+    // Frustration sounds (7 sighs)
+    await this.loadAsset('sigh01', '/src/assets/audio/reactions/sigh01.mp3', -4);
+    await this.loadAsset('sigh02', '/src/assets/audio/reactions/sigh02.mp3', -4);
+    await this.loadAsset('sigh03', '/src/assets/audio/reactions/sigh03.mp3', -4);
+    await this.loadAsset('sigh04', '/src/assets/audio/reactions/sigh04.mp3', -4);
+    await this.loadAsset('sigh05', '/src/assets/audio/reactions/sigh05.mp3', -4);
+    await this.loadAsset('sigh06', '/src/assets/audio/reactions/sigh06.mp3', -4);
+    await this.loadAsset('sigh07', '/src/assets/audio/reactions/sigh07.mp3', -4);
+    
+    // Coffee sound
+    await this.loadAsset('coffee01', '/src/assets/audio/reactions/coffee01.mp3', -3);
+    
+    console.log('[AudioService] All game assets loaded');
+  }
+
+  /**
+   * Spielt zufälligen Stempel-Sound
+   */
+  playRandomStamp(): void {
+    const stamps = ['stamp01', 'stamp02', 'stamp03'];
+    const randomStamp = stamps[Math.floor(Math.random() * stamps.length)];
+    this.playSfx(randomStamp);
+  }
+
+  /**
+   * Spielt zufälligen Frustrations-Sound
+   */
+  playRandomFrustration(): void {
+    const sighs = ['sigh01', 'sigh02', 'sigh03', 'sigh04', 'sigh05', 'sigh06', 'sigh07'];
+    const randomSigh = sighs[Math.floor(Math.random() * sighs.length)];
+    this.playSfx(randomSigh);
+  }
+
+  /**
+   * Spielt Kaffee-Klecker-Sound
+   */
+  playCoffeeSpill(): void {
+    this.playSfx('coffee01');
+  }
+
+  /**
+   * Wählt zufällige Ambience-ID
+   */
+  static selectRandomAmbience(): string {
+    const ambiences = ['amb01', 'amb02', 'amb03'];
+    return ambiences[Math.floor(Math.random() * ambiences.length)];
+  }
+
   getStats(): {
     initialized: boolean;
     assetsLoaded: number;

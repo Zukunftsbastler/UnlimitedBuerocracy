@@ -4,7 +4,7 @@
  * Hauptkomponente mit Tab-Navigation und Meta-Progression
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import type {
   SpielSnapshot,
   UiToWorkerMessage,
@@ -16,7 +16,7 @@ import { RunScreen } from '../features/run/RunScreen';
 import { RunEndModal } from '../features/run/RunEndModal';
 import { MetaScreen } from '../features/meta/MetaScreen';
 import { StatsScreen } from '../features/stats/StatsScreen';
-import { audioService } from '../services/audio/AudioService';
+import { audioService, AudioService } from '../services/audio/AudioService';
 import { db } from '../data/db';
 
 // Import stamp images for logo
@@ -52,6 +52,8 @@ export function App() {
   const [activeTab, setActiveTab] = useState<TabType>('run');
   const [runEndStats, setRunEndStats] = useState<RunStats | null>(null);
   const [stampCounter, setStampCounter] = useState(0); // Trigger für neuen Stempel
+  const [audioInitialized, setAudioInitialized] = useState(false);
+  const currentAmbienceRef = useRef<string>(''); // Track current ambience for run
   
   // Meta-State (persistent)
   const [metaState, setMetaState] = useState<MetaZustand>({
@@ -159,16 +161,37 @@ export function App() {
     };
   }, [metaState, saveMetaState]);
 
-  // Audio initialisieren
+  // Audio initialisieren und Assets laden
   const initAudio = useCallback(async () => {
-    await audioService.init();
-  }, []);
+    if (audioInitialized) return;
+    
+    try {
+      await audioService.init();
+      await audioService.loadGameAssets();
+      setAudioInitialized(true);
+      
+      // Starte Menu-Musik (nur wenn kein Run aktiv)
+      if (!runActive) {
+        // Kleiner Delay um sicherzustellen dass Assets geladen sind
+        setTimeout(() => {
+          audioService.playMusic('menu_music', { loop: true, fadeMs: 1000 });
+          console.log('[Audio] Menu music started');
+        }, 100);
+      }
+    } catch (error) {
+      console.error('Audio initialization failed:', error);
+    }
+  }, [audioInitialized, runActive]);
 
   // Run starten
   const handleStartRun = useCallback(() => {
     if (!worker) return;
 
     initAudio();
+
+    // Wähle zufällige Ambience für diesen Run
+    const selectedAmbience = AudioService.selectRandomAmbience();
+    currentAmbienceRef.current = selectedAmbience;
 
     const msg: UiToWorkerMessage = {
       type: 'RUN_STEUERUNG',
@@ -179,7 +202,7 @@ export function App() {
     worker.postMessage(msg);
     setRunActive(true);
     setActiveTab('run');
-    audioService.onRunStart();
+    audioService.onRunStart(selectedAmbience);
   }, [worker, initAudio, metaState]);
 
   // Run beenden
@@ -345,7 +368,15 @@ export function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div 
+      className="min-h-screen bg-gray-100"
+      onClick={() => {
+        // Initialize audio on first user interaction (browser requirement)
+        if (!audioInitialized) {
+          initAudio();
+        }
+      }}
+    >
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-4">
