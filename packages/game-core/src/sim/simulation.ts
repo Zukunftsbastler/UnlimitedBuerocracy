@@ -585,6 +585,10 @@ export function handleFailedStamp(
 
 /**
  * Benutzer-Klick verarbeiten
+ * 
+ * WICHTIG: Diese Funktion wird NUR bei erfolgreichem Stempel aufgerufen
+ * (wenn FormManager einen erfolgreichen Stempel registriert hat).
+ * Die Erfolgs-/Fehlerlogik liegt bei FormManager (Konzentration >= 0.3).
  */
 export function handleClick(
   state: SimulationState,
@@ -622,22 +626,18 @@ export function handleClick(
   state.zustaende.konzentration -= konzentrationsKosten;
   state.zustaende.konzentration = clamp01(state.zustaende.konzentration);
   
-  // Output berechnen mit Energie^0.5 Multiplikator
+  // Output berechnen - NUR mit Konzentration (Energie spielt keine Rolle mehr)
+  // Dies entspricht der Logik in FormManager, wo nur Konzentration >= 0.3 zählt
   const basisErtrag = 1.0;
-  const energieEffizienz = Math.pow(state.zustaende.energie, 0.5);
   const konzentrationMult = clamp(0.5 + state.zustaende.konzentration * 0.5, 0.5, 1.0);
   
   // Meta-Upgrades: Klick-Bonus anwenden
   const metaMult = (state as any).metaMultipliers?.klickErtrag || 1;
   
-  const ertrag = basisErtrag * energieEffizienz * konzentrationMult * metaMult;
+  const ertrag = basisErtrag * konzentrationMult * metaMult;
   
-  // Fehler-Check: Wenn Ertrag zu niedrig, zählt als Fehler
-  if (ertrag < 0.3) {
-    state.stats.fehler++;
-  } else {
-    state.ressourcen.AP += ertrag;
-  }
+  // AP vergeben (immer, da dieser Code nur bei erfolgreichem Stempel erreicht wird)
+  state.ressourcen.AP += ertrag;
   
   // Aufwand steigt mit jedem Klick - MIT Zuwachs-Multiplikator
   state.aufwand += 0.002 * aufwandZuwachsMult;
@@ -894,9 +894,10 @@ export function createSnapshot(state: SimulationState, config: BalancingConfig):
     return sum + a.stufe * 1.0; // vereinfacht
   }, 0);
   
-  const klickErtrag = 1.0 * 
-    clamp(0.5 + state.zustaende.energie * 0.5, 0.5, 1.0) *
-    clamp(0.8 + state.zustaende.konzentration * 0.4, 0.8, 1.2);
+  // Klick-Ertrag: NUR von Konzentration abhängig (entspricht der handleClick-Logik)
+  const konzentrationMult = clamp(0.5 + state.zustaende.konzentration * 0.5, 0.5, 1.0);
+  const metaMult = (state as any).metaMultipliers?.klickErtrag || 1;
+  const klickErtrag = 1.0 * konzentrationMult * metaMult;
   
   const raten: Raten = {
     klickErtrag,
